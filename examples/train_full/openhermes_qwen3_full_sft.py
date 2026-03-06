@@ -23,7 +23,7 @@ import sys
 SIZE_CONFIGS = {
     "small": {
         # 0.6B — fast enough for 3 epochs within the 48 h budget
-        "model_name_or_path": "Qwen/Qwen3-0.6B-Instruct",
+        "model_name_or_path": "Qwen/Qwen3-0.6B",
         "output_dir": "saves/qwen3-0.6b/full/sft_openhermes",
         "per_device_train_batch_size": "4",
         "gradient_accumulation_steps": "4",   # effective batch = 16
@@ -33,7 +33,7 @@ SIZE_CONFIGS = {
     "large": {
         # 1.7B — one epoch keeps wall-clock comparable to the 0.6B 3-epoch run;
         #        gradient checkpointing guards against OOM with full activations
-        "model_name_or_path": "Qwen/Qwen3-1.7B-Instruct",
+        "model_name_or_path": "Qwen/Qwen3-1.7B",
         "output_dir": "saves/qwen3-1.7b/full/sft_openhermes",
         "per_device_train_batch_size": "2",
         "gradient_accumulation_steps": "8",   # effective batch = 16
@@ -85,8 +85,8 @@ def main() -> None:
     if len(sys.argv) < 2 or sys.argv[1] not in SIZE_CONFIGS:
         print("Error: first argument must be 'small' or 'large'.\n")
         print(f"Usage: python {sys.argv[0]} [small|large] [key=value ...]")
-        print("  small  ->  Qwen/Qwen3-0.6B-Instruct   (~18-22 h on A6000, 3 epochs)")
-        print("  large  ->  Qwen/Qwen3-1.7B-Instruct   (~18-24 h on A6000, 1 epoch)")
+        print("  small  ->  Qwen/Qwen3-0.6B   (~18-22 h on A6000, 3 epochs)")
+        print("  large  ->  Qwen/Qwen3-1.7B   (~18-24 h on A6000, 1 epoch)")
         sys.exit(1)
 
     size = sys.argv[1]
