@@ -738,5 +738,18 @@
       "prompt": "content"
     },
     "folder": "python"
+  },
+  "open_hermes": {
+    "hf_hub_url": "teknium/OpenHermes-2.5",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt"
+    }
   }
 }
