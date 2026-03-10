@@ -63,8 +63,11 @@ SIZE_CONFIGS = {
 SHARED_DEFAULTS = {
     "stage": "sft",
     "do_train": "true",
+    "do_eval": "true",
     "finetuning_type": "full",
     "dataset": "open_hermes",
+    "val_size": "0.05",          # 5 % held-out eval split (≈7 500 samples at max_samples=150 000)
+    "eval_strategy": "epoch",   # evaluate at the end of every epoch
     "template": "qwen3_nothink",
     "cutoff_len": "1024",
     "max_samples": "150000",
@@ -139,12 +142,12 @@ def main() -> None:
         if key in config:
             config[key] = int(config[key])
 
-    for key in ("num_train_epochs", "learning_rate", "warmup_ratio"):
+    for key in ("num_train_epochs", "learning_rate", "warmup_ratio", "val_size"):
         if key in config:
             config[key] = float(config[key])
 
     for key in ("bf16", "plot_loss", "overwrite_output_dir", "save_only_model",
-                "gradient_checkpointing", "do_train"):
+                "gradient_checkpointing", "do_train", "do_eval"):
         if key in config:
             val = config[key]
             config[key] = val if isinstance(val, bool) else val.lower() == "true"
