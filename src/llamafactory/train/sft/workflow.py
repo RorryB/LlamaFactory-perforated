@@ -17,6 +17,13 @@
 
 from typing import TYPE_CHECKING, Optional
 
+try:
+    from perforatedai import globals_perforatedai as GPA
+    from perforatedai import utils_perforatedai as UPA
+    _PAI_AVAILABLE = True
+except ImportError:
+    _PAI_AVAILABLE = False
+
 from ...data import SFTDataCollatorWith4DAttentionMask, get_dataset, get_template_and_fix_tokenizer
 from ...extras.constants import IGNORE_INDEX
 from ...extras.logging import get_logger
@@ -51,6 +58,18 @@ def run_sft(
     template = get_template_and_fix_tokenizer(tokenizer, data_args)
     dataset_module = get_dataset(template, model_args, data_args, training_args, stage="sft", **tokenizer_module)
     model = load_model(tokenizer, model_args, finetuning_args, training_args.do_train)
+
+    # ── PerforatedAI model initialisation ─────────────────────────────────────
+    # Wrap the model only during training; eval/predict passes use it as-is.
+    # GPA.pc settings (output_dimensions, n_epochs_to_switch, GPA.metric, etc.)
+    # should be configured in your experiment script before calling run_exp().
+    # If perforatedai is not installed this block is skipped and training runs
+    # as normal with the unwrapped model.
+    if training_args.do_train and _PAI_AVAILABLE:
+        model = UPA.initialize_pai(model, maximizing_score=False, save_name="PAI")
+        print("PAI Model initialized with the following configuration:")
+        print(model)
+    # ──────────────────────────────────────────────────────────────────────────
 
     ref_model = None
     if finetuning_args.use_asft_loss:

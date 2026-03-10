@@ -17,6 +17,22 @@ Both are sized for roughly equal wall-clock time so results are directly compara
 
 import sys
 
+try:
+    from perforatedai import globals_perforatedai as GPA
+
+    # ── PerforatedAI configuration ────────────────────────────────────────────
+    # Transformer LLM outputs are 3D: (batch, seq_len, hidden_size).
+    # -1 = batch/sequence dims to average over; 0 = hidden dim to keep per-neuron.
+    GPA.pc.set_output_dimensions([-1, -1, 0])
+    # How many epochs between normal ↔ perforated mode switches.
+    # For short runs (1–3 epochs) keep this at 1; increase for longer schedules.
+    GPA.pc.set_n_epochs_to_switch(1)
+    GPA.pc.set_testing_dendrite_capacity(False)
+    # PAI tracks eval_loss to decide when to switch modes (lower is better).
+    GPA.metric = "eval_loss"
+except ImportError:
+    pass  # perforatedai not installed — regular training will proceed
+
 
 # ── Size-dependent defaults ────────────────────────────────────────────────────
 
