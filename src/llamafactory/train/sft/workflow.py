@@ -66,7 +66,7 @@ def run_sft(
     # If perforatedai is not installed this block is skipped and training runs
     # as normal with the unwrapped model.
     if training_args.do_train and _PAI_AVAILABLE:
-        model = UPA.initialize_pai(model, maximizing_score=False, save_name="PAI")
+        model = UPA.initialize_pai(model, maximizing_score=False, save_name=GPA.pc.get_save_name())
         print("PAI Model initialized with the following configuration:")
         print(model)
     # ──────────────────────────────────────────────────────────────────────────

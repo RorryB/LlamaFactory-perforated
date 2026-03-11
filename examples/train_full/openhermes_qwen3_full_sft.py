@@ -29,7 +29,9 @@ try:
     GPA.pc.set_n_epochs_to_switch(1)
     GPA.pc.set_testing_dendrite_capacity(False)
     # PAI tracks eval_loss to decide when to switch modes (lower is better).
-    GPA.metric = "eval_loss"
+    GPA.pc.set_library_validation_score("eval_loss")
+    GPA.pc.set_library_extra_scores(["train_loss"])
+
 except ImportError:
     pass  # perforatedai not installed — regular training will proceed
 
@@ -110,6 +112,11 @@ def main() -> None:
 
     size = sys.argv[1]
     overrides = parse_overrides(sys.argv[2:])
+
+    try:
+        GPA.pc.set_save_name(size)  # PAI checkpoints saved as "small" or "large"
+    except NameError:
+        pass  # perforatedai not installed
 
     # ── Merge configs: shared → size-specific → user overrides ────────────
     config = {**SHARED_DEFAULTS, **SIZE_CONFIGS[size], **overrides}
